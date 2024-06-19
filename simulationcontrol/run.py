@@ -59,6 +59,7 @@ def save_output(base_configuration, benchmark, console_output, cpistack, started
     directory = os.path.join(RESULTS_FOLDER, run)
     if not os.path.exists(directory):
         os.makedirs(directory)
+    shutil.copy('/data/s0/HotSniper/config/base.cfg', directory)
     with gzip.open(os.path.join(directory, 'execution.log.gz'), 'w') as f:
         f.write(console_output.encode('utf-8'))
     with open(os.path.join(directory, 'executioninfo.txt'), 'w') as f:
@@ -90,7 +91,7 @@ def save_output(base_configuration, benchmark, console_output, cpistack, started
             continue
         shutil.copy(os.path.join(BENCHMARKS, f), directory)
 
-    create_plots(run)
+    #create_plots(run)
 
 
 def run(base_configuration, benchmark, ignore_error=False):
@@ -262,9 +263,9 @@ def example():
 
         min_parallelism = get_feasible_parallelisms(benchmark)[0]
         max_parallelism = get_feasible_parallelisms(benchmark)[-1]
-        for freq in (1, 2):
-            #for parallelism in (max_parallelism,):
-            for parallelism in (3, ):
+        for freq in (4, ):
+            for parallelism in (4,):
+            #for parallelism in (2, 3, 4):
                 # you can also use try_run instead
                 run(['{:.1f}GHz'.format(freq), 'maxFreq', 'slowDVFS'], get_instance(benchmark, parallelism, input_set='simsmall'))
 
@@ -300,7 +301,8 @@ def test_static_power():
 
 
 def main():
-    example()
+    run(['4.0GHz', 'first_unused'], get_instance('parsec-blackscholes', 16, input_set='simsmall'))
+    #example()
     #test_static_power()
     # multi_program()
 

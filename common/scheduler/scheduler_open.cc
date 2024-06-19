@@ -514,13 +514,27 @@ int SchedulerOpen::setAffinity (thread_id_t thread_id) {
 	int coreFound = -1;
 	app_id_t app_id =  Sim()->getThreadManager()->getThreadFromID(thread_id)->getAppId();
 
-	for (int  i = 0; i<numberOfCores; i++) 
+	/**for (int  i = 0; i<numberOfCores; i++) 
 		if (systemCores[i].assignedTaskID == app_id && systemCores[i].assignedThreadID == -1) {
 				coreFound = i;
 				break;
-		}
+		}*/
 
-	
+	for (int  i = 0; i<numberOfCores; i++) {
+		int j = Sim()->getCfg()->getIntArray("scheduler/open/preferred_core", i);
+		if (systemCores[j].assignedTaskID == app_id && systemCores[j].assignedThreadID == -1) {
+				coreFound = j;
+				break;
+		}
+	}
+
+	/**int p = Sim()->getCfg()->getIntArray("scheduler/open/preferred_core", 0);
+	if (p != -1) {	
+		coreFound = p;
+	} else {
+		coreFound = 0; //is this line of any use
+	}*/
+
 	if (coreFound == -1) {
 		cout << "\n[Scheduler]: Setting Affinity for Thread " << thread_id << " from Task " << app_id << " to Invalid Core ID" << "\n" << endl;
 		cpu_set_t my_set; 
